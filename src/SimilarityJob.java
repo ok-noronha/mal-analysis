@@ -27,23 +27,21 @@ public class SimilarityJob {
       for (int i = 0; i < n; i++) {
         String[] a = items[i].split(":");
         String item1 = a[0];
-        double rating1;         
-        try{
-        	rating1 = Double.parseDouble(a[1]);
-        }
-        catch (Exception e) {
-        	continue;
+        double rating1;
+        try {
+          rating1 = Double.parseDouble(a[1]);
+        } catch (Exception e) {
+          continue;
         }
 
         for (int j = i + 1; j < n; j++) {
           String[] b = items[j].split(":");
           String item2 = b[0];
           double rating2;
-          try{
-        	  rating2 = Double.parseDouble(b[1]);
-          }
-          catch (Exception e) {
-          	continue;
+          try {
+            rating2 = Double.parseDouble(b[1]);
+          } catch (Exception e) {
+            continue;
           }
           outKey.set(item1 + "," + item2);
           outValue.set(rating1 + "," + rating2);

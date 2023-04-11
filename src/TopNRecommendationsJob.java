@@ -85,7 +85,7 @@ public class TopNRecommendationsJob {
     job.setOutputValueClass(Text.class);
     FileInputFormat.addInputPath(job, new Path("/sim/part-r-00000"));
     DeleteOutputDirectory.deleteIfExists(job, new Path("/rec"));
-    
+
     FileOutputFormat.setOutputPath(job, new Path("/rec"));
     job.waitForCompletion(true);
   }

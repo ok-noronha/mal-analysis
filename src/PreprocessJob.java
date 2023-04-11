@@ -13,24 +13,23 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class PreprocessJob {
 
   public static class Map extends Mapper<LongWritable, Text, Text, Text> {
-  
+
     private Text outKey = new Text();
     private Text outValue = new Text();
 
     public void map(LongWritable key, Text value, Context context)
         throws IOException, InterruptedException {
 
-    	String user;
-        String item;
-        String rating;
-        String[] tokens = value.toString().split(",");
+      String user;
+      String item;
+      String rating;
+      String[] tokens = value.toString().split(",");
       try {
-    	  user = tokens[0];
-          item = tokens[1];
-          rating = tokens[5];
-      }
-      catch (Exception e){
-    	  return;
+        user = tokens[0];
+        item = tokens[1];
+        rating = tokens[5];
+      } catch (Exception e) {
+        return;
       }
 
       outKey.set(user);

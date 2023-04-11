@@ -22,17 +22,16 @@ public class AnimeVarianceJob {
 
     public void map(LongWritable key, Text value, Context context)
         throws IOException, InterruptedException {
-    	
-    	String animeId;
-        double score;
+
+      String animeId;
+      double score;
 
       String[] tokens = value.toString().split(",");
-      try{
-    	  animeId = tokens[1];
-          score = Double.parseDouble(tokens[5]);
-      }
-      catch(Exception e){
-    	  return;
+      try {
+        animeId = tokens[1];
+        score = Double.parseDouble(tokens[5]);
+      } catch (Exception e) {
+        return;
       }
 
       outKey.set(animeId);
@@ -68,8 +67,8 @@ public class AnimeVarianceJob {
       variance /= list.size();
 
       outValue.set(variance);
-      if (variance>15){
-    	  context.write(key, outValue);
+      if (variance > 15) {
+        context.write(key, outValue);
       }
     }
   }

@@ -25,17 +25,16 @@ public class NameJob {
 
     public void map(LongWritable key, Text value, Context context)
         throws IOException, InterruptedException {
-    	
-    	String animeId;
-        String score;
+
+      String animeId;
+      String score;
 
       String[] tokens = value.toString().split("\t");
-      try{
-    	  animeId = tokens[0];
-          score = "var!:!"+tokens[1];
-      }
-      catch(Exception e){
-    	  return;
+      try {
+        animeId = tokens[0];
+        score = "var!:!" + tokens[1];
+      } catch (Exception e) {
+        return;
       }
 
       outKey.set(animeId);
@@ -44,32 +43,32 @@ public class NameJob {
       context.write(outKey, outValue);
     }
   }
+
   public static class Map2 extends Mapper<LongWritable, Text, Text, Text> {
 
-	  private Text outKey = new Text();
-	    private Text outValue = new Text();
+    private Text outKey = new Text();
+    private Text outValue = new Text();
 
-	    public void map(LongWritable key, Text value, Context context)
-	        throws IOException, InterruptedException {
-	    	
-	    	String animeId;
-	        String score;
+    public void map(LongWritable key, Text value, Context context)
+        throws IOException, InterruptedException {
 
-	      String[] tokens = value.toString().split(",");
-	      try{
-	    	  animeId = tokens[0];
-	          score = "nam!:!"+tokens[1];
-	      }
-	      catch(Exception e){
-	    	  return;
-	      }
+      String animeId;
+      String score;
 
-	      outKey.set(animeId);
-	      outValue.set(score);
+      String[] tokens = value.toString().split(",");
+      try {
+        animeId = tokens[0];
+        score = "nam!:!" + tokens[1];
+      } catch (Exception e) {
+        return;
+      }
 
-	      context.write(outKey, outValue);
-	    }
-	  }
+      outKey.set(animeId);
+      outValue.set(score);
+
+      context.write(outKey, outValue);
+    }
+  }
 
   public static class Reduce extends Reducer<Text, Text, Text, Text> {
 
@@ -78,19 +77,18 @@ public class NameJob {
     public void reduce(Text key, Iterable<Text> values, Context context)
         throws IOException, InterruptedException {
 
-    	String var = "";
-    	String nam = "";
+      String var = "";
+      String nam = "";
       for (Text value : values) {
-    	  String[] f = value.toString().split("!:!");
-    	  if (f[0].equals("var")){
-    		  var=f[1];
-    	  }
-    	  else{
-    		  nam = f[1];
-    	  }
+        String[] f = value.toString().split("!:!");
+        if (f[0].equals("var")) {
+          var = f[1];
+        } else {
+          nam = f[1];
+        }
       }
-      if(!(nam.isEmpty() || var.isEmpty())){
-    	  context.write(new Text(nam), new Text(var));
+      if (!(nam.isEmpty() || var.isEmpty())) {
+        context.write(new Text(nam), new Text(var));
       }
     }
   }
@@ -99,12 +97,12 @@ public class NameJob {
 
     Job job = new Job();
     job.setJarByClass(AnimeVarianceJob.class);
-    //job.setMapperClass(Map.class);
+    // job.setMapperClass(Map.class);
     job.setReducerClass(Reduce.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
-    MultipleInputs.addInputPath(job, new Path("/ur/part-r-00000"),TextInputFormat.class, Map1.class);
-    MultipleInputs.addInputPath(job, new Path("/anis"),TextInputFormat.class, Map2.class);
+    MultipleInputs.addInputPath(job, new Path("/ur/part-r-00000"), TextInputFormat.class, Map1.class);
+    MultipleInputs.addInputPath(job, new Path("/anis"), TextInputFormat.class, Map2.class);
     DeleteOutputDirectory.deleteIfExists(job, new Path("/under"));
     FileOutputFormat.setOutputPath(job, new Path("/under"));
     job.waitForCompletion(true);
